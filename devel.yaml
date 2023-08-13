@@ -1,24 +1,30 @@
 version: "2.4"
 
 services:
-  odoo_proxy:
-    image: ghcr.io/tecnativa/docker-whitelist:latest
-    depends_on:
-      - odoo
-    networks: &public
-      default:
-      public:
-    ports:
-      - "127.0.0.1:16899:6899"
-      - "127.0.0.1:16069:8069"
-    environment:
-      PORT: "6899 8069"
-      TARGET: odoo
+  # odoo_proxy:
+  #   image: ghcr.io/tecnativa/docker-whitelist:latest
+  #   depends_on:
+  #     - odoo
+  #   networks: &public
+  #     default:
+  #     public:
+  #   ports:
+  #     - "127.0.0.1:16899:6899"
+  #     - "127.0.0.1:16069:8069"
+  #   environment:
+  #     PORT: "6899 8069"
+  #     TARGET: odoo
 
   odoo:
     extends:
       file: common.yaml
       service: odoo
+    networks: &public
+      default:
+      public:
+    ports:
+      - "16899:6899"
+      - "16069:8069"
     build:
       args:
         # To aggregate in development, use `setup-devel.yaml`
@@ -62,6 +68,14 @@ services:
       - --limit-time-real=9999999
       - --workers=0
       - --dev=reload,qweb,werkzeug,xml
+
+  db:
+    extends:
+      file: common.yaml
+      service: db
+    environment:
+      POSTGRES_DB: *dbname
+      POSTGRES_PASSWORD: odoopassword
 
   pgweb:
     image: docker.io/sosedoff/pgweb
@@ -158,7 +172,7 @@ services:
 
 networks:
   default:
-    internal: ${DOODBA_NETWORK_INTERNAL-true}
+    # internal: ${DOODBA_NETWORK_INTERNAL-true}
   public:
 
 volumes:
