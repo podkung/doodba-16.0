@@ -17,4 +17,4 @@ jobs:
           server: 128.199.224.142
           username: ${{ secrets.ftp_username }}
           password: ${{ secrets.ftp_password }}
-          server-dir: /opt/doodba-16.0
+          server-dir: /opt/doodba-16.0/
