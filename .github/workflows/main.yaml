@@ -17,5 +17,5 @@ jobs:
           server: 128.199.224.142
           username: ${{ secrets.ftp_username }}
           password: ${{ secrets.ftp_password }}
-          # server-dir: /home/odoo/test/
+          server-dir: /home/odoo/test/
           # protocol: ftp
