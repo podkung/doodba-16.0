@@ -1,0 +1,28 @@
+version: "2.4"
+
+services:
+  odoo:
+    build:
+      context: ./odoo
+      args:
+        DB_VERSION: "latest"
+        ODOO_VERSION: "16.0"
+        UID: "${UID:-1000}"
+        GID: "${GID:-1000}"
+    environment:
+      EMAIL_FROM: ""
+      PGDATABASE: &dbname prod
+      PGUSER: &dbuser "odoo"
+      PROXY_MODE: "true"
+      LIST_DB: "false"
+    tty: true
+    volumes:
+      - filestore:/var/lib/odoo:z
+    labels:
+      traefik.backend.buffering.retryExpression: IsNetworkError() && Attempts() < 5
+      traefik.docker.network: "inverseproxy_shared"
+      traefik.frontend.passHostHeader: "true"
+      traefik.port: "8069"
+
+  smtpfake:
+    image: docker.io/mailhog/mailhog
